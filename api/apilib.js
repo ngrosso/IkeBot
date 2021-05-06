@@ -2,9 +2,12 @@ const axios = require('axios');
 const querystring = require('querystring');
 
 const fs = require('fs').promises;
-const credentials = require ('./env/auth.json');
+const credentials = require ('../env/auth.json');
 
-async function getAccountStatus (token) {
+const APIURL="https://api.invertironline.com/api/v2"
+
+async function getAccountStatus () {
+    let token = await auth();
     let res = await axios.get(`${APIURL}/estadocuenta`, 
     {
         headers: { Authorization: `Bearer ${token.access_token}` }
@@ -12,7 +15,8 @@ async function getAccountStatus (token) {
     return res.data;
 }
 
-async function getPortfolioArgentina (token) {
+async function getPortfolioArgentina () {
+    let token = await auth();
     let res = await axios.get(`${APIURL}/portafolio/argentina`,
     {
         headers: { Authorization: `Bearer ${token.access_token}` }
@@ -20,7 +24,8 @@ async function getPortfolioArgentina (token) {
     return res.data;
 }
 
-async function getPortfolioUSA (token) {
+async function getPortfolioUSA () {
+    let token = await auth();
     let res = await axios.get(`${APIURL}/portafolio/estados_Unidos`,
     {
         headers: { Authorization: `Bearer ${token.access_token}` }
@@ -28,28 +33,32 @@ async function getPortfolioUSA (token) {
     return res.data;
 }
 
-async function getOperations (token) {
+async function getOperations () {
+    let token = await auth();
     let res = await axios.get(`${APIURL}/operaciones`, {
         headers: { Authorization: `Bearer ${token.access_token}` }
     })
     return res.data;
 }
 
-async function getOperation (token, number) {
+async function getOperation (number) {
+    let token = await auth();
     let res = await axios.get(`${APIURL}/operaciones/${number}`, {
         headers: { Authorization: `Bearer ${token.access_token}` }
     })
     return res.data;
 }
 
-async function cancelOperation (token, number) {
+async function cancelOperation (number) {
+    let token = await auth();
     let res = await axios.delete(`${APIURL}/operaciones/${number}`, {
         headers: { Authorization: `Bearer ${token.access_token}` }
     })
     return res.data;
 }
 
-async function buy (token, market, asset, quantity, price, term, validTill) {
+async function buy (market, asset, quantity, price, term, validTill) {
+    let token = await auth();
     let res = await axios.post(`${APIURL}/operar/Comprar`, 
     {
         mercado: market,
@@ -65,7 +74,8 @@ async function buy (token, market, asset, quantity, price, term, validTill) {
     return res.data;
 }
 
-async function sell (token, market, asset, quantity, price, term, validTill) {
+async function sell (market, asset, quantity, price, term, validTill) {
+    let token = await auth();
     let res = await axios.post(`${APIURL}/operar/operar/Vender`, 
     {
         mercado: market,
@@ -81,49 +91,56 @@ async function sell (token, market, asset, quantity, price, term, validTill) {
     return res.data;
 }
 
-async function getTicker (token, market, asset) {
+async function getTicker (market, asset) {
+    let token = await auth();
     let res = await axios.get(`${APIURL}/${market}/Titulos/${asset}`, {
         headers: { Authorization: `Bearer ${token.access_token}` }
     })
     return res.data;
 }
 
-async function getOptions (token, market, asset) {
+async function getOptions (market, asset) {
+    let token = await auth();
     let res = await axios.get(`${APIURL}/${market}/Titulos/${asset}/Opciones`, {
         headers: { Authorization: `Bearer ${token.access_token}` }
     })
     return res.data;
 }
 
-async function getTickerValue (token, market, asset) {
+async function getTickerValue (market, asset) {
+    let token = await auth();
     let res = await axios.get(`${APIURL}/${market}/Titulos/${asset}/Cotizacion`, {
         headers: { Authorization: `Bearer ${token.access_token}` }
     })
     return res.data;
 }
 
-async function getPanels (token, asset, panel, country) {
+async function getPanels (asset, panel, country) {
+    let token = await auth();
     let res = await axios.get(`${APIURL}/Cotizaciones/${asset}/${panel}/${country}`, {
         headers: { Authorization: `Bearer ${token.access_token}` }
     })
     return res.data;
 }
 
-async function getTickerValuesBetweenDates (token, market, asset, dateFrom, dateTill, adjusted) {
+async function getTickerValuesBetweenDates (market, asset, dateFrom, dateTill, adjusted) {
+    let token = await auth();
     let res = await axios.get(`${APIURL}/${market}/Titulos/${asset}/Cotizacion/seriehistorica/${dateFrom}/${dateTill}/${adjusted}`, {
         headers: { Authorization: `Bearer ${token.access_token}` }
     })
     return res.data;
 }
 
-async function getInstrumentsByCountry (token, country) {
+async function getInstrumentsByCountry (country) {
+    let token = await auth();
     let res = await axios.get(`${APIURL}/${country}/Titulos/Cotizacion/Instrumentos`, {
         headers: { Authorization: `Bearer ${token.access_token}` }
     })
     return res.data;
 }
 
-async function getPanelsByInstrumentAndCountry (token, country, asset) {
+async function getPanelsByInstrumentAndCountry (country, asset) {
+    let token = await auth();
     let res = await axios.get(`${APIURL}/${country}/Titulos/Cotizacion/Paneles/${asset}`, {
         headers: { Authorization: `Bearer ${token.access_token}` }
     })
@@ -170,7 +187,7 @@ async function getToken (refreshToken) {
     } else {
         creds = querystring.stringify(credentials);
     }
-    let token = await axios.post(`${APIURL}`, creds)
+    let token = await axios.post("https://api.invertironline.com/token", creds)
     await fs.appendFile('token.json', JSON.stringify(token.data))
 }
 

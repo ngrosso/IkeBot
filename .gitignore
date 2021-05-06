@@ -103,5 +103,6 @@ dist
 # TernJS port file
 .tern-port
 
-# Environment folder
+# Custom ignores
 env
+token.json
