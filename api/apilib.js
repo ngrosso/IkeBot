@@ -115,34 +115,19 @@ async function getTickerValue (market, asset) {
     return res.data;
 }
 
-async function getPanels (asset, panel, country) {
+/*
+type->acciones
+panel->CEDEARs
+country->argentina
+*/
+async function getPanels (type, panel, country) {
     let token = await auth();
-    let res = await axios.get(`${APIURL}/Cotizaciones/${asset}/${panel}/${country}`, {
+    let res = await axios.get(`${APIURL}/Cotizaciones/${type}/${panel}/${country}`, {
         headers: { Authorization: `Bearer ${token.access_token}` }
     })
     return res.data;
 }
 
-/*
-request: bCBA", "ko", "2021-05-19","2021-05-20", "sinAjustar"
-response: array of ultimoPrecio
- "ultimoPrecio": 1762,
-      "variacion": -0.22,
-      "apertura": 1761.5,
-      "maximo": 1765,
-      "minimo": 1732.5,
-      "fechaHora": "2021-05-19T16:52:54.177",
-      "tendencia": "baja",
-      "cierreAnterior": 1766,
-      "montoOperado": 7729620.5,
-      "volumenNominal": 3,
-      "precioPromedio": 0,
-      "moneda": "peso_Argentino",
-      "precioAjuste": 0,
-      "interesesAbiertos": 0,
-      "puntas": null,
-      "cantidadOperaciones": 380
-*/
 async function getTickerValuesBetweenDates (market, asset, dateFrom, dateTill, adjusted) {
     let token = await auth();
     let res = await axios.get(`${APIURL}/${market}/Titulos/${asset}/Cotizacion/seriehistorica/${dateFrom}/${dateTill}/${adjusted}`, {
